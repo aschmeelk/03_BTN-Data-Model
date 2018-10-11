@@ -1,0 +1,37 @@
+Sub ClearNulls
+
+//********************************************************************************
+// 	Name:	ClearNulls
+// 	Notes: 	Set default field value when NULL
+//	Source:	Resident gra_work_order_line
+//********************************************************************************
+
+NoConcatenate
+[WO Line]:
+Load
+	*,
+    Upper(If(IsNull([Fleet Code]),'Not Specified',[Fleet Code])) 	as %FLEET_KEY,
+    If(IsNull([Fleet Code]),'Not Specified',[Fleet Code]) 			as [Fleet Code 1],
+    If(IsNull([Fleet Name]),'Not Specified',[Fleet Name]) 			as [Fleet Name 1], 
+    If(IsNull([Fleet Method]),'Not Specified',[Fleet Method]) 		as [Fleet Method 1]    
+Resident
+	gra_work_order_line;
+
+Drop Table gra_work_order_line;
+
+Drop Fields 
+	[Fleet Code], 
+	[Fleet Name],
+	[Fleet Method]
+From 
+	[WO Line];
+
+Rename Fields 
+	[Fleet Code 1] 		to [Fleet Code],
+	[Fleet Name 1] 		to [Fleet Name],
+	[Fleet Method 1] 	to [Fleet Method];
+
+// Save load statistics
+Call TimeLog('ClearNulls', zTimeMark, vDealer);
+
+EndSub

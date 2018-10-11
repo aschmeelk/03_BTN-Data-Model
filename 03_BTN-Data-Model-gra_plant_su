@@ -1,0 +1,26 @@
+Sub gra_plant_setup
+
+//********************************************************************************
+// 	Name:	gra_plant_setup
+// 	Notes: 	Loads plant information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_plant_setup:
+Load
+	AutoNumberHash128(PLANT_SETUP_KEY) 	as PLANT_SETUP_KEY,
+    PLANT_CODE,
+    Capitalize("Plant Name")			as [Plant Name],
+    "Days Till Due"
+From 
+	[$(vLibTransform)Trans_gra_plant_setup_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_plant_setup', zTimeMark, vDealer);
+
+EndSub
+
+//     "Plant City",
+//     "Plant State-Province",
+//     "Plant Postal Code",
+//     PLANT_COUNTRY_CODE,

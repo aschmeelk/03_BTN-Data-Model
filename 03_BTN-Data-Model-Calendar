@@ -1,0 +1,76 @@
+Sub Calendar
+
+//********************************************************************************
+// 	Name:	Calendar
+// 	Notes: 	Creates date ranges based on date time functions
+//	Source:	Qvd generated from external file
+//********************************************************************************
+
+Let vToday = Floor(Today(1));   
+Let vTodayLastYear = Floor(AddYears(Today(1), -1));
+
+Ranges:
+Load  
+	RangeID,
+    If(RangeName='Null()',Null(),RangeName)		as RangeName, 
+    num(evaluate(RangeStart)) 					as RangeStart, 
+    num(evaluate(RangeEnd)) 					as RangeEnd, 
+    isFuture, 
+    isPast,
+    num(evaluate(OffSet))						as OffSet,
+    PreviousRangeName
+;
+Load
+    RangeID,
+    RangeName,
+    RangeStart,
+    RangeEnd,
+    isFuture,
+    isPast,
+    OffSet,
+    PreviousRangeName
+From 
+	[$(vLibExtract)Date_Ranges.qvd](qvd);
+
+iDateMatch:
+IntervalMatch (%DATE_KEY) 
+Load   
+	RangeStart, 
+    RangeEnd
+Resident 
+	Ranges;
+
+Left Join(iDateMatch)
+Load
+	RangeStart,
+    RangeEnd,
+    RangeID
+Resident 
+	Ranges;
+
+DateRanges:
+Load Distinct
+	%DATE_KEY,
+    RangeID
+Resident 
+	iDateMatch;
+
+Drop Fields RangeStart, RangeEnd;
+
+Left Join(DateRanges)
+Load
+	RangeID,
+    RangeName,
+    isPast,
+    isFuture,
+    OffSet,
+    PreviousRangeName
+Resident 
+	Ranges;
+
+Drop Tables Ranges, iDateMatch;
+
+// Save load statistics
+Call TimeLog('Calendar', zTimeMark, vDealer);
+
+EndSub

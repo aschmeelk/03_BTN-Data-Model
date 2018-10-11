@@ -1,0 +1,21 @@
+Sub gra_casing_series
+
+//********************************************************************************
+// 	Name:	gra_casing_series
+// 	Notes: 	Loads casing series information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_casing_series:
+Load
+	AutoNumberHash128(CASING_SERIES_KEY) 	as %CASING_SERIES_KEY,
+    Series
+From
+	[$(vLibTransform)Trans_gra_casing_series_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_casing_series', zTimeMark, vDealer);
+
+EndSub
+
+ //   gra_casing_series.DESCRIPTION

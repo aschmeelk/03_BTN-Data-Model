@@ -1,0 +1,26 @@
+Sub gra_btm_trans
+
+//********************************************************************************
+// 	Name:	gra_btm_trans
+// 	Notes: 	Loads the transactions for BTM and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+Trans_GRA_BTM_TRANS:
+Load
+    AutoNumberHash128(Work_Order_Number_key)	as %WORK_ORDER_NUM_KEY,
+    BTM_USER,
+    TRANSACTION_TIMESTAMP
+From
+	[$(vLibTransform)Trans_GRA_BTM_TRANS_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_btm_trans', zTimeMark, vDealer);
+
+EndSub
+
+//     ERROR_TYPE,
+//     TRANSACTION_INFO,
+//     TRANSACTION_TYPE,
+//     DEVICE_NAME,
+//     DEVICE_OS

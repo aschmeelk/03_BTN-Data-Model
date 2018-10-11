@@ -1,0 +1,19 @@
+Sub TimeLog(vFunctionName, zTimeMark, vTag)
+
+//**************************************************
+// 	Name:	TimeLog
+// 	Notes: 	Writes the elapsed time for each routine
+//**************************************************
+
+    Let zDuration=interval(now(1)-zTimeMark, 'hh:mm:ss.fff');
+    Let vCount =  NoOfRows('LoadStatistics');
+    
+    LoadStatistics: 
+    Load * Inline [ 
+      %FunctionName, %StartTime, %Duration, %Count, %Tag
+      '$(vFunctionName)', '$(zTimeMark)', '$(zDuration)', '$(vCount)', '$(vTag)'
+    ];
+    
+    Let zTimeMark = Now(1);
+    
+EndSub

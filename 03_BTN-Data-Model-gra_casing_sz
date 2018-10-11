@@ -1,0 +1,33 @@
+Sub gra_casing_size
+
+//********************************************************************************
+// 	Name:	gra_casing_size
+// 	Notes: 	Loads casing size information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_casing_size:
+Load
+	AutoNumberHash128(CASING_SIZE_KEY) 	as %CASING_SIZE_KEY,
+    "Casing Size",
+    "Size Desc",
+    CASING_CONSTRUCTION,
+    WHEEL_DIAMETER
+From 
+	[$(vLibTransform)Trans_gra_casing_size_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_casing_size', zTimeMark, vDealer);
+
+EndSub
+
+//     MIN_CIRCUM,
+//     MAX_CIRCUM,
+//     MIN_BUILD_CIRCUM,
+//     MAX_BUILD_CIRCUM,
+//     STOCK_CASING_PART_NUMBER,
+//     CC_PART_NUMBER,
+//     CP_REJECT_PART_NUMBER,
+//     SECTION_WIDTH,
+//     ASPECT_RATIO,
+//     gra_casing_size.LOGICAL_DELETE

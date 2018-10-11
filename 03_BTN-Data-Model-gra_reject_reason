@@ -1,0 +1,28 @@
+Sub gra_reject_reason
+
+//********************************************************************************
+// 	Name:	gra_reject_reason
+// 	Notes: 	Loads reject reason information
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_reject_reason:
+LOAD
+	Dealer,
+	REJECT_REASON_KEY					as %REJECT_REASON_KEY,
+    "Reject Code",
+    Capitalize("Reject Description")	as [Reject Description],
+    "Reject Type"
+From 
+	[$(vLibTransform)Trans_gra_reject_reason_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_reject_reason', zTimeMark, vDealer);
+
+EndSub
+
+//     gra_reject_reason.ACTIVE,
+//     FAILURE_TYPE,
+//     RETURN_DISP_PART_NUM,
+//     SCRAP_DISP_PART_NUM,
+//     gra_reject_reason.LOGICAL_DELETE

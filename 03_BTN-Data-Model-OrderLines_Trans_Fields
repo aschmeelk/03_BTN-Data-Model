@@ -1,0 +1,108 @@
+Sub OrderLines_Trans_Fields
+
+//********************************************************************************
+// 	Name:	OrderLines_Trans_Fields
+// 	Notes: 	Creates new fields, apply transformations for key fields and reduce
+//			records for order lines
+//	Source:	Resident gra_work_order_line
+//********************************************************************************
+
+NoConcatenate
+gra_work_order_line_Tmp:
+Load 
+	*,
+	Round([Tire Age in Weeks]/52, 1)										as [Tire Age in Years],
+    If([Tire Age in Weeks]<0, 1, 0)											as [Bad DOT Date]
+	;
+Load 
+	*,
+	[Completed Week Sequence] - [Manf Week Sequence]						as [Tire Age in Weeks]
+    ;
+Load
+	WORK_ORDER_LINE_KEY,
+    
+    AutoNumberHash128(TREAD_DESC_KEY)	 									as %TREAD_DESC_KEY,
+    AutoNumberHash128(CASING_SIZE_KEY)				 						as %CASING_SIZE_KEY,
+    AutoNumberHash128(TREAD_WIDTH_KEY) 										as %TREAD_WIDTH_KEY,
+    AutoNumberHash128(WORK_ORDER_LINE_KEY) 									as %WORK_ORDER_LINE_KEY,
+    AutoNumberHash128(CUSTOMER_INFO_SETTINGS_KEY)		 					as %CUSTOMER_INFO_SETTINGS_KEY,
+    AutoNumberHash128(CASING_MAKE_KEY)				 						as %CASING_MAKE_KEY,
+    AutoNumberHash128(CASING_SERIES_KEY)		 							as %CASING_SERIES_KEY,
+	AutoNumberHash128(WORK_ORDER_HEADER_KEY)				 				as %WORK_ORDER_HEADER_KEY, 
+    // No autonumber to use it in Reject & Scrap Keys
+    If(IsNull(SC_REJECT_REASON_FK),REJECT_REASON_KEY,SC_REJECT_REASON_FK)	as %REJECT_REASON_KEY,  
+	AutoNumberHash128([Tag #])												as [TAG #],
+
+	MakeWeekDate(Right([Manf. DOT], 2)+2000, Left([Manf. DOT],2), 6) 		as [Manf Date],
+	(Right([Manf. DOT], 2)+2000)*52 + Left([Manf. DOT],2)-1			 		as [Manf Week Sequence],
+	Year([Completed Date])*52 + Week([Completed Date])-1					as [Completed Week Sequence],
+
+    Date(Floor([Completed Date]))											as [Completed Date Tmp],
+    Text((Time(Frac([Completed Date]),'hh:mm tt')))							as [Completed Time],
+    Date(Floor(REJECT_DATE))												as [Reject Date],
+    Text((Time(Frac(REJECT_DATE),'hh:mm tt')))								as [Reject Time],
+    Capitalize(DISPOSITION)													as Disposition,
+
+	If(Len(KeepChar(Tag, '0123456789')) = Len(Tag), 1, 0)					as _Flag_IsGoodTag,
+    
+	If(Match([Casing Status],'COMPLETE','POSTED','CASING_COMPLETION') > 0,
+		If([Process Code] = 'SC' or [Work Type] = 'SC',1,
+			If("Is Rejected" = 'Yes',3,
+				If([Process Code] = 'RO' or [Work Type] = 'RO',2,
+					If([Work Type] = 'RR', 4,
+						If([Work Type] = 'AD' or [Work Type] = 'RE',5,
+							If([Work Type] = 'IO',6, 
+								If([Work Type] = 'NP', 7,8
+								)
+							)
+						)
+					)
+				)
+			)
+		), 100
+	)            															as _Flag_Class
+Resident
+	gra_work_order_line
+Where
+	([Casing Status] <> 'DELETED' 
+	 and Match([Process Code],'RR', 'RO', 'CC', 'CP', 'DS', 'BS', 'AD', 'NP', 'IO', 'SC') > 0
+	)
+    or ([Casing Status] = 'DELETED' and Match([Process Code],'CC','CP') > 0);
+;
+
+Inner Join (gra_work_order_line)
+Load
+	*
+Resident
+	gra_work_order_line_Tmp;
+
+Drop Table gra_work_order_line_Tmp;
+
+// Drop untransformed fields
+Drop Fields
+	WORK_ORDER_LINE_KEY,
+	TREAD_DESC_KEY,
+    CASING_SIZE_KEY,
+    TREAD_WIDTH_KEY,
+    WORK_ORDER_LINE_KEY,
+    CUSTOMER_INFO_SETTINGS_KEY,
+    CASING_MAKE_KEY,
+    CASING_SERIES_KEY,
+	WORK_ORDER_HEADER_KEY,
+	[Completed Date],
+    REJECT_DATE,
+    DISPOSITION,
+    [Tag #],
+	REJECT_REASON_KEY,
+    SC_REJECT_REASON_FK
+From
+	gra_work_order_line;
+
+Rename Fields 
+	[Completed Date Tmp] 	to [Completed Date],
+    [TAG #]					to [Tag #];
+
+// Save load statistics
+Call TimeLog('OrderLines_Trans_Fields', zTimeMark, vDealer);
+
+EndSub

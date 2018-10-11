@@ -1,0 +1,193 @@
+Sub Transformations
+
+//********************************************************************************
+// 	Name:	Transformations
+// 	Notes: 	Joins most of the loaded tables into Work Order Lines table, generate
+//			the star scheme (link table) and drop temporary tables.
+//
+//			gra_work_order_header 		<<--- 	gra_plant_setup, gra_site_setup
+//			* gra_tread_repair 			<<--- 	gra_repair
+//			gra_reject_reason			<<--- 	CommRejectReasons
+//			gra_customer_info_settings	<<--- 	gra_nafa_customers
+//			gra_tread_desc				<<--- 	Retread_Master
+//			* gra_work_order_line		<<--- 	gra_tread_width, gra_casing_make, gra_casing_series,
+//												gra_casing_size, gra_reject_reason, gra_tread_desc,
+//												gra_customer_info_settings, gra_work_order_header,
+//												Fleets, ClassDesc
+//			* DateBridge				<<---	gra_work_order_line, DescDateType
+//	Source:	Resident tables
+//********************************************************************************
+
+//***************************
+//*** gra_work_order_header
+//***************************
+
+Left Join (gra_work_order_header)
+Load 
+	*
+Resident 
+	gra_plant_setup;
+
+Left Join (gra_work_order_header)
+Load 
+	*
+Resident 
+	gra_site_setup;
+
+Drop Table gra_plant_setup;
+Drop Table gra_site_setup;
+
+//***************************
+//*** gra_tread_repair
+//***************************
+
+Left Join (gra_tread_repair)
+Load 
+	*
+Resident 
+	gra_repair;
+
+Drop Table gra_repair;
+
+//***************************
+//*** gra_reject_reason
+//***************************
+
+//DPT: Add table 06/Ago/2018
+Left Join (gra_reject_reason)
+Load
+	*
+Resident
+	CommRejectReasons;
+
+Drop Table CommRejectReasons;
+
+//*******************************
+//*** gra_customer_info_settings --> DPT 08/Ago/2018 Star Model
+//*******************************
+
+Left Join (gra_customer_info_settings)
+Load
+	*
+Resident
+	gra_nafa_customers;
+
+Drop Table gra_nafa_customers;
+
+//***************************
+//*** gra_tread_desc
+//***************************
+
+//DPT: Add table 15/Ago/2018
+Left Join (gra_tread_desc)
+Load
+	*
+Resident
+	Retread_Master;
+
+Drop Table Retread_Master;
+
+//***************************
+//*** gra_work_order_line
+//***************************
+
+Left Join (gra_work_order_line)
+Load 
+	*
+Resident 
+	gra_tread_width;
+
+Left Join(gra_work_order_line)
+Load 
+	*
+Resident 
+	gra_casing_make;
+
+Left Join (gra_work_order_line)
+Load 
+	*
+Resident 
+	gra_casing_series;
+
+Left Join (gra_work_order_line)
+Load 
+	*
+Resident 
+	gra_casing_size;
+
+Left Join (gra_work_order_line)
+Load 
+	*
+Resident 
+	gra_reject_reason;
+
+// DPT: 13/Ago/2018 Star Model
+Left Join (gra_work_order_line)
+Load
+	*
+Resident
+	gra_tread_desc;
+
+// DPT: 13/Ago/2018 Star Model
+Left Join (gra_work_order_line)
+Load
+	*
+Resident
+	gra_customer_info_settings;
+
+// DPT: 13/Ago/2018 Star Model
+Left Join (gra_work_order_line)
+Load
+	*
+Resident
+	gra_work_order_header;
+
+Left Join (gra_work_order_line)
+Load
+	*
+Resident
+	Fleets;
+
+// DPT: 13/Ago/2018 Star Model
+Left Join (gra_work_order_line)
+Load
+    _Flag_Class,
+    ClassName
+From 
+	[$(vLibExtract)Class_Description.qvd](qvd);
+
+Drop Table gra_tread_width;
+Drop Table gra_casing_make;
+Drop Table gra_casing_series;
+Drop Table gra_casing_size;
+Drop Table gra_reject_reason;
+Drop Table gra_tread_desc;
+Drop Table gra_customer_info_settings;
+Drop Table gra_work_order_header;
+Drop Table Fleets;
+
+//***************************
+//*** DateBridge
+//***************************
+
+// DPT: 13/Ago/2018 Star Model
+Left Join(DateBridge)
+Load
+	%WORK_ORDER_LINE_KEY,
+    %WORK_ORDER_NUM_KEY
+Resident
+	gra_work_order_line;
+    
+Drop Field %WORK_ORDER_NUM_KEY From gra_work_order_line;
+
+Left Join(DateBridge)
+Load
+    DateType,
+    "Date Basis"
+From 
+	[$(vLibExtract)Date_Type_Description.qvd](qvd);
+
+// Save load statistics
+Call TimeLog('Transformations', zTimeMark, vDealer);
+
+EndSub

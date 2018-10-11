@@ -1,0 +1,52 @@
+if vDevMode = 0 then
+	//*** Load transactional tables & catalogs from all dealers ***//
+	Let vDealer = '*';
+
+    Call gra_work_order_line;    
+    Call gra_work_order_header;
+    Call gra_btm_trans;
+    Call gra_site_setup;
+    Call gra_plant_setup;
+    Call gra_tread_desc;
+    Call gra_tread_repair;
+    Call gra_repair;
+    Call gra_tread_width;
+    Call gra_casing_make;
+    Call gra_casing_series;
+    Call gra_casing_size;
+    Call gra_reject_reason;
+    Call gra_customer_info_settings;
+    Call gra_nafa_customers;
+    Call DateBridge;
+    Call MasterCalendar;
+Else
+	//*** Load transactional tables & catalogs only for specified dealers ***//
+	Call LoopCycle;
+EndIf
+
+//*** Create transformed fields on Work Order Lines ***/
+Call OrderLines_Trans_Fields;
+
+//*** Create date ranges in the calendar ***//
+Call Calendar;
+
+//*** Load retread information ***//
+Call Retread_Master;
+
+//*** Translate from French into English ***//
+Call RejectReasonFix;
+
+//*** Load commercial reject reasons ***//
+Call CommRejectReasons;
+
+//*** Load fleet information ***//
+Call Fleets;
+
+//*** Transform all the transactional data & catalogs ***//
+Call Transformations;
+
+//*** Clean up the data model ***//
+Call Drops;
+
+//*** Set null values for specified fields ***//
+Call ClearNulls;

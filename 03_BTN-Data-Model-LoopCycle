@@ -1,0 +1,89 @@
+Sub LoopCycle
+
+//********************************************************************************
+// 	Name:	LoopCycle
+// 	Notes: 	For testing cases, loads information only for specified dealers in
+//			Dealer inline table
+//	Action:	Executes routine calls dealer by dealer
+//********************************************************************************
+
+Dealers:
+Load
+    DealerNo,
+    Dealer,
+    Environment
+From 
+	[$(vLibExtract)Dealer_Data_Connection.qvd](qvd)
+Where
+	Environment = '$(vEnvironment)'
+    and DealerNo = 1//<= 5
+    ;
+
+
+/*
+ 1,Smetzer,Smetzer BTN 
+ 2,Border,Border BTN 
+ 3,Treads West Edmonton,TWE BTN 
+ 4,Belisle,Belisle BTN 
+ 5,Villemaire,Villemaire BTN 
+ 6,TWL,TWL BTN 
+ 7,New England,NewEngland BTN 
+ 8,Beasley,Beasley BTN 
+ 9,Big L,BigL BTN 
+ 10,Highlands,Highlands BTN 
+11,Quality,Quality BTN 
+12,Raben,Raben BTN 
+13,A&E,A&E BTN 
+14,Miller Tire,Miller BTN 
+15,Bill Williams,BWT BTN 
+16,Allied,Allied BTN 
+17,Canyon,Canyon BTN 
+18,Colony,Colony BTN 
+19,Superior,Superior BTN 
+20,MTI,MTI BTN 
+21,Tiremaster,Tiremaster BTN 
+22,Ziegler,Ziegler BTN 
+23,Shrader,Shrader BTN 
+24,Jacks,Jacks BTN 
+25,Valley,Valley BTN 
+26,Loves,Loves BTN 
+27,STTC,STTC BTN 
+28,TCI,TCI BTN 
+29,Bauer,Bauer BTN 
+30,T&W,T_W BTN 
+31,Snider,Snider BTN 
+*/
+
+Let vNumRows = NoOfRows('Dealers');
+
+For i=0 to $(vNumRows)-1
+
+	Trace $(i);
+    
+    Let vDealer 		= Peek('Dealer',$(i), 'Dealers' );
+    
+	Trace -------- $(vDealer)-------------;
+    
+	Call gra_work_order_line;
+	Call gra_work_order_header;
+ 	Call gra_btm_trans;
+	Call gra_site_setup;
+	Call gra_plant_setup;
+	Call gra_tread_desc;
+	Call gra_tread_repair;
+	Call gra_repair;
+	Call gra_tread_width;
+	Call gra_casing_make;
+	Call gra_casing_series;
+	Call gra_casing_size;
+	Call gra_reject_reason;
+	Call gra_customer_info_settings;
+	Call gra_nafa_customers;
+	Call DateBridge;
+ 	Call MasterCalendar;
+
+Next i;
+
+Drop Table Dealers;
+
+EndSub

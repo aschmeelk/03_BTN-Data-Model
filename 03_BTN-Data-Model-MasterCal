@@ -1,0 +1,31 @@
+Sub MasterCalendar
+
+//********************************************************************************
+// 	Name:	MasterCalendar
+// 	Notes: 	Loads the master calendar and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+MasterCalendar:
+LOAD
+	Distinct
+	Floor(MasterDate)			as %DATE_KEY,	// will join to the named ranges
+    MasterDate,
+    "Week",
+    "Year",
+    "Month",
+    "Day",
+    CurYTDFlag,
+    LastYTDFlag,
+    RC12,
+    MonthYear,
+    Quarter,
+    "WeekYear",
+    "WeekDay"
+From 
+	[$(vLibTransform)Trans_MasterCalendar_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('MasterCalendar', zTimeMark, vDealer);
+
+EndSub

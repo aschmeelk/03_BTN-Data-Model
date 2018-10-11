@@ -1,0 +1,72 @@
+Sub RejectReasonFix
+
+//********************************************************************************
+// 	Name:	RejectReasonFix
+// 	Notes: 	Translate all the reject reasons from French into English
+//	Source:	Resident gra_reject_reason
+//********************************************************************************
+
+// Get all distinct code, description & type for reasons
+NoConcatenate
+gra_reject_reason_Eng:
+Load
+	Distinct
+    "Reject Code",
+    "Reject Description",
+    "Reject Type"
+Resident	
+    gra_reject_reason
+Where
+	Match(Dealer,'Belisle','Villemaire') = 0;
+
+// Get all distinct %REJECT_REASON_KEY & code in French
+NoConcatenate
+gra_reject_reason_Fr:
+Load
+	Distinct
+    Dealer,
+	%REJECT_REASON_KEY 	as TRANSLATED_REJECT_REASON_KEY,
+    "Reject Code"
+Resident	
+    gra_reject_reason
+Where
+	Match(Dealer,'Belisle','Villemaire') > 0;
+
+// Apply Translation
+Inner Join(gra_reject_reason_Fr)
+Load
+	*
+Resident
+	gra_reject_reason_Eng;
+
+NoConcatenate
+gra_reject_reason_Tmp:
+Load
+	*
+Resident    
+	gra_reject_reason
+Where
+	not Exists(TRANSLATED_REJECT_REASON_KEY, %REJECT_REASON_KEY);
+//	Match(Dealer,'Belisle','Villemaire') = 0;
+
+Concatenate(gra_reject_reason_Tmp)
+Load
+	Dealer,
+	TRANSLATED_REJECT_REASON_KEY 	as %REJECT_REASON_KEY,
+    "Reject Code",
+    "Reject Description",
+    "Reject Type"
+Resident
+	gra_reject_reason_Fr;
+
+Drop Field Dealer From gra_reject_reason_Tmp;
+Drop Table gra_reject_reason;
+Rename Table gra_reject_reason_Tmp to gra_reject_reason;
+
+Drop Table gra_reject_reason_Eng;
+Drop Table gra_reject_reason_Fr;
+
+// Save load statistics
+Call TimeLog('RejectReasonFix', zTimeMark, vDealer);
+
+EndSub

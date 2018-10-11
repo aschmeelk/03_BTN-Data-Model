@@ -1,0 +1,39 @@
+Sub Retread_Master
+
+//********************************************************************************
+// 	Name:	Retread_Master
+// 	Notes: 	Loads retread information and apply transformations for key fields
+//	Source:	Qvd generated from external file
+//********************************************************************************
+
+Retread_Master:
+Load
+	*,
+ 	if(Len(Application) = 0, 'Not Specified',
+		Left(Application,Len(Application)-1))			as [Retread Application]
+;    
+Load
+    "From BTN"											as Tread,
+    tread_design										as [Tread Design],
+    "Wheel Position"									as [Wheel Position],
+    MFG													as [Tread MFG],
+    Smartway_Indicator									as _Flag_Smartway_Indicator,
+	If(Len(LTrim(RTrim(Application_1))) = 0, '', 
+    	LTrim(RTrim(Application_1))&',') &
+	If(Len(LTrim(RTrim(Application_2))) = 0, '', 
+    	LTrim(RTrim(Application_2))&',') &
+	If(Len(LTrim(RTrim(Application_3))) = 0, '', 
+    	LTrim(RTrim(Application_3))&',') &
+	If(Len(LTrim(RTrim(Application_4))) = 0, '', 
+    	LTrim(RTrim(Application_4))&',')				as Application
+From 
+	[$(vLibExtract)Retread_Master.qvd](qvd)
+Where
+	Not IsNull("From BTN");
+    
+Drop Field Application From Retread_Master;
+
+// Save load statistics
+Call TimeLog('Retread_Master', zTimeMark, vDealer);
+
+EndSub

@@ -1,0 +1,24 @@
+Sub CommRejectReasons
+
+//********************************************************************************
+// 	Name:	CommRejectReasons
+// 	Notes: 	Loads commercial reject reasons and apply transformations for key fields
+//	Source:	Qvd generated from external file
+//********************************************************************************
+
+CommRejectReasons:
+Load
+    "Reason ID" 				as [Reject Code],
+    "Reason Description"		as [Commercial Reason Description],
+    "Reason Type"				as [Commercial Reason Type],
+    "Active Flag"				as [Commercial Active Flag],
+    "FAILURE TYPE"				as [Commercial Failure Type],
+    "Commercial Reason Type" 	as [Commercial Reject Reason Type]
+From 
+	[$(vLibExtract)Commercial_Reject_Reasons.qvd](qvd);
+
+// Save load statistics
+Call TimeLog('CommRejectReasons', zTimeMark, vDealer);
+
+EndSub
+

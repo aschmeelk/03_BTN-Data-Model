@@ -1,0 +1,27 @@
+Sub gra_casing_make
+
+//********************************************************************************
+// 	Name:	gra_casing_make
+// 	Notes: 	Loads casing make information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_casing_make:
+Load
+	AutoNumberHash128(CASING_MAKE_KEY) 	as %CASING_MAKE_KEY,
+    "Casking Make",
+    Brand
+From 
+	[$(vLibTransform)Trans_gra_casing_make_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_casing_make', zTimeMark, vDealer);
+
+EndSub
+
+//     TIRE,
+//     VIRGIN_SUFFIX,
+//     NON_VIRGIN_SUFFIX,
+//     FG_VIRGIN_SUFFIX,
+//     gra_casing_make.LOGICAL_DELETE,
+//     FG_NON_VIRGIN_SUFFIX

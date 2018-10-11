@@ -1,0 +1,40 @@
+Sub gra_site_setup
+
+//********************************************************************************
+// 	Name:	gra_site_setup
+// 	Notes: 	Loads site information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_site_setup:
+Load
+	AutoNumberHash128(SITE_SETUP_KEY) as SITE_SETUP_KEY,
+    SITE_CODE,
+    Site
+From 
+	[$(vLibTransform)Trans_gra_site_setup_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_site_setup', zTimeMark, vDealer);
+
+EndSub
+
+//     ADDRESS_ONE,
+//     ADDRESS_TWO,
+//     gra_site_setup.CITY,
+//     gra_site_setup.STATE_PROVINCE,
+//     gra_site_setup.POSTAL_CODE,
+//     SITE_COUNTRY_CODE,
+//     CONTACT_NAME,
+//     gra_site_setup.PHONE_NUMBER,
+//     gra_site_setup.FAX_NUMBER,
+//     SITE_ACTIVE,
+//     gra_site_setup.INTERFACE_ID1,
+//     gra_site_setup.INTERFACE_ID2,
+//     SHIPPING,
+//     RECEIVING,
+//     SCRAP_SHIPPING,
+//     SERVICE_POST_ENABLED,
+//     REJECT_BY_CASING_POST,
+//     REJECT_BY_CUSTOMER_POST
+

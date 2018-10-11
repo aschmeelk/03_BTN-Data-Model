@@ -1,0 +1,57 @@
+Sub Drops
+
+//********************************************************************************
+// 	Name:	Drops
+// 	Notes: 	Drops fields and rename final tables
+//	Source:	None
+//********************************************************************************
+
+//***********************
+//	Drop fields
+//***********************
+
+// Unused fields
+Drop Fields
+	isFuture,
+	isPast 						
+From 
+	DateRanges;
+
+Drop Fields 
+	// Key fields used for joins
+	%TREAD_DESC_KEY,
+	%CASING_SIZE_KEY,
+	%TREAD_WIDTH_KEY,
+	%CUSTOMER_INFO_SETTINGS_KEY,
+	%CASING_MAKE_KEY,
+	%CASING_SERIES_KEY,
+	%WORK_ORDER_HEADER_KEY,
+	%REJECT_REASON_KEY,
+	SITE_SETUP_KEY,
+	PLANT_SETUP_KEY,
+    
+    // Unused fields
+    [Commercial Active Flag],
+    [Commercial Failure Type],
+    [Commercial Reason Description],
+    [Commercial Reason Type],
+	[Manf Week Sequence],
+	[Completed Week Sequence]
+    
+From 
+	gra_work_order_line;
+
+Drop Field REPAIR_KEY From gra_tread_repair;
+
+//*******************************
+//	Rename Final Tables 
+//*******************************
+
+// Rename final tables
+Rename Table gra_tread_repair to [Tread Repair];
+Rename Table Trans_GRA_BTM_TRANS to [Mobile Transaction];
+
+// Save load statistics
+Call TimeLog('Drops', zTimeMark, vDealer);
+
+EndSub

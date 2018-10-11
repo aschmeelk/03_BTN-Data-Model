@@ -1,0 +1,22 @@
+Sub Fleets
+
+//********************************************************************************
+// 	Name:	Fleets
+// 	Notes: 	Loads Fleet information, this will be used for SECTION ACCESS
+//	Source:	Qvd generated from external file
+//********************************************************************************
+
+Fleets:
+Load	
+    [Fleet Code],
+    [Fleet Name],
+    Method				as [Fleet Method],
+    SHIP_TO
+From 
+	[$(vLibExtract)Fleets.qvd](qvd);
+
+// Save load statistics
+Call TimeLog('Fleets', zTimeMark, vDealer);
+
+EndSub
+

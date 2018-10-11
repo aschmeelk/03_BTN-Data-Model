@@ -1,0 +1,46 @@
+Sub gra_nafa_customers
+
+//********************************************************************************
+// 	Name:	gra_nafa_customers
+// 	Notes: 	Loads NAFA customer information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_nafa_customers:
+Load
+	AutoNumberHash128(NAFA_CUSTOMER_KEY) 						as NAFA_CUSTOMER_KEY,
+    NAFA_CUSTOMER_NUMBER,
+    NAFA_CUSTOMER_TYPE,
+    NAFA_SHIP_TO												as SHIP_TO,
+	Capitalize(NAFA_CITY) & ', ' & NAFA_STATE & ' - ' &
+		NAFA_SHIP_TO											as SHIP_TO_NAME,
+    NAFA_BILL_TO												as BILL_TO,
+    NAFA_BILL_TO_NAME											as BILL_TO_NAME,
+    HOME_OFFICE_NUMBER,
+    HOME_OFFICE_NAME,
+    PARENT_COMPANY_NUMBER,
+    PARENT_COMPANY_NAME,
+    NAFA_SUB_CHANNEL											as SEGMENT,
+    NAFA_SUB_CHANNEL_DESCRIPTION								as SEGMENT_DESCRIPTION
+From 
+	[$(vLibTransform)Trans_gra_nafa_customers_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_nafa_customers', zTimeMark, vDealer);
+
+EndSub
+
+//    NAFA_SHIP_TO_NAME,
+//     DOING_BUSINESS_AS,
+//     NAFA_ADDRESS_1,
+//     NAFA_ADDRESS_2,
+//     NAFA_CITY,
+//     NAFA_STATE,
+//     NAFA_ZIP,
+//     NAFA_COUNTRY,
+//     NAFA_EMAIL,
+//     NAFA_COUNTRY_CODE,
+//     NAFA_PHONE_NUMBER,
+//     NAFA_HOLD_CODE,
+//     NAFA_HOLD_DATE,
+//     NAFA_LAST_UPDATED_DATE

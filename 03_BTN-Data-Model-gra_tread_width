@@ -1,0 +1,22 @@
+Sub gra_tread_width
+
+//********************************************************************************
+// 	Name:	gra_tread_width
+// 	Notes: 	Loads tread width information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_tread_width:
+Load
+	AutoNumberHash128(TREAD_WIDTH_KEY) 	as %TREAD_WIDTH_KEY,
+    "Tread Width"
+From 
+	[$(vLibTransform)Trans_gra_tread_width_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_tread_width', zTimeMark, vDealer);
+
+EndSub
+
+//     gra_tread_width.DESCRIPTION,
+//     gra_tread_width.LOGICAL_DELETE

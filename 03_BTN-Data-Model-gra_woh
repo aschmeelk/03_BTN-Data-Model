@@ -1,0 +1,53 @@
+Sub gra_work_order_header
+
+//********************************************************************************
+// 	Name:	gra_work_order_header
+// 	Notes: 	Loads the work order header and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_work_order_header:
+Load
+	AutoNumberHash128(WORK_ORDER_HEADER_KEY) 		as %WORK_ORDER_HEADER_KEY,
+    AutoNumberHash128(SITE_SETUP_KEY) 				as SITE_SETUP_KEY,
+    AutoNumberHash128(PLANT_SETUP_KEY) 				as PLANT_SETUP_KEY,
+	AutoNumberHash128(Work_Order_Number_key)		as %WORK_ORDER_NUM_KEY,    
+    Date(Floor([WO Date]))							as [WO Date],
+    Date(Floor(DUE_DATE))							as DUE_DATE,
+    Work_Order_Number,
+    CRN_NUM,
+    "WO Status",
+    DaysOverDue,
+    _flagIsOverDue
+From 
+	[$(vLibTransform)Trans_gra_work_order_header_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_work_order_header', zTimeMark, vDealer);
+
+EndSub
+
+//    BTM_USER,
+//    DEVICE_NAME,
+//    DEVICE_OS,
+//     CUSTOMER_FK,
+//     INVOICE_SERIES,
+//     COM_OPERATION_CODE,
+//     NF_DATE_ISSUED,
+//     FISCAL_ID_NUM,
+//     DELIVERY_DAY,
+//     OVERRIDE_ADDRESS_FLAG,
+//     TOTAL_LINES,
+//     OPTIONAL_DATE1,
+//     OPTIONAL_DATE2,
+//     OPTIONAL_TEXT1,
+//     OPTIONAL_TEXT2,
+//     SOURCE_CUSTOMER_NAME,
+//     TRANSFER_DATE,
+//     TRANSFER_FLAG,
+//     INVOICE_CUSTOMER_NAME,
+//     ERROR_TYPE,
+//     TRANSACTION_INFO,
+//     TRANSACTION_TIMESTAMP,
+//     TRANSACTION_TYPE,
+

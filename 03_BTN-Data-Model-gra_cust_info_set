@@ -1,0 +1,76 @@
+Sub gra_customer_info_settings
+
+//********************************************************************************
+// 	Name:	gra_customer_info_settings
+// 	Notes: 	Loads customer information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_customer_info_settings:
+Load
+    AutoNumberHash128(CUSTOMER_INFO_SETTINGS_KEY) 	as %CUSTOMER_INFO_SETTINGS_KEY,
+    AutoNumberHash128(NAFA_CUSTOMER_KEY) 			as NAFA_CUSTOMER_KEY,    
+	"Customer Code",
+    "Customer Name",
+    ENTREPRISE_ID,
+    BRAND,
+    gra_customer_info_settings.TYPE					as [Type Customer],
+    IS_NAFA_CUSTOMER,
+    CAM_SPEC_ID,
+    ADC_NAME,
+    gra_customer_info_settings.ACTIVE				as [Active Customer]
+From 
+	[$(vLibTransform)Trans_gra_customer_info_settings_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_customer_info_settings', zTimeMark, vDealer);
+
+EndSub
+
+//     SHIP_TO,
+//     BILL_TO,
+//     CAM_PRODUCT_SP_KEY,
+//     gra_customer_info_settings.ACTIVE,
+//     ADDRESS1,
+//     ADDRESS2,
+//     gra_customer_info_settings.CITY,
+//     gra_customer_info_settings.POSTAL_CODE,
+//     COUNTRY,
+//     CONTACT,
+//     EMAIL,
+//     gra_customer_info_settings.PHONE_NUMBER,
+//     gra_customer_info_settings.FAX_NUMBER,
+//     gra_customer_info_settings.STATE_PROVINCE,
+//     SHIP_TO_CODE,
+//     SALES_ID,
+//     ROUTE_ID,
+//     CUSTOMER_REJECTS_DISPOSITION,
+//     STOCK_REJECTS_DISPOSITION,
+//     CENTRAL_REJECT,
+//     TURNAROUND_TIME,
+//     REMEMBER_BRAND,
+//     REMEMBER_CASING_NOTE,
+//     gra_customer_info_settings.TREAD_DEPTH,
+//     FINISHED_LABEL_FORMAT,
+//     REJECT_RETURN_LABEL_FORMAT,
+//     REJECT_SCRAP_LABEL_FORMAT,
+//     BARCODE_LABEL_FORMAT,
+//     WHEEL_PROCESSING,
+//     LANGUAGE,
+//     gra_customer_info_settings.INTERFACE_ID1,
+//     gra_customer_info_settings.INTERFACE_ID2,
+//     NOTE,
+//     ASSOCIATED_TO,
+//     REPAIR_LIMITS_CHECK_APPLY_WHEN,
+//     IMPORTED,
+//     SCRAP_CASING_PLANT,
+//     PLANT_ASSIGNMENT,
+//     gra_customer_info_settings.RT_DOT,
+//     INCLUDE_SCRAP_CASINGS_REJECT_CUSTOMER,
+//     BTM_FLAG,
+//     RFID_CUST_FLAG,
+//     IS_NAFA_CUSTOMER_LOGICALLY_DELETED,
+//     NAFA_CUSTOMER_HOLD_CODE,
+//     ADC_KEY,
+//     "New ADC Name",
+//     "New ADC Code"

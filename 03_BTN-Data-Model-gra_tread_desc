@@ -1,0 +1,30 @@
+Sub gra_tread_desc
+
+//********************************************************************************
+// 	Name:	gra_tread_desc
+// 	Notes: 	Loads tread information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_tread_desc:
+Load
+	AutoNumberHash128(TREAD_DESC_KEY) 	as %TREAD_DESC_KEY,
+    Tread,
+    gra_tread_desc.DESCRIPTION			as [Tread Description],
+    M3_FLAG								as _Flag_Tread_M3
+From 
+	[$(vLibTransform)Trans_gra_tread_desc_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_tread_desc', zTimeMark, vDealer);
+
+EndSub
+
+//     TREAD_PIC_FILENAME,
+//     CURE_TYPE,
+//     ACTIVE_FLAG,
+//     gra_tread_desc.LOGICAL_DELETE,
+//     TREAD_MAKE,
+//     TREAD_BRAND,
+//     IMPORTED_FLAG
+//     M3_FLAG								

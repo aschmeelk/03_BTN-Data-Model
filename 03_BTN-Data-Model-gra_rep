@@ -1,0 +1,35 @@
+Sub gra_repair
+
+//********************************************************************************
+// 	Name:	gra_repair
+// 	Notes: 	Loads repair information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_repair:
+Load
+	AutoNumberHash128(REPAIR_KEY) 		as REPAIR_KEY,
+    "Repair Description",
+    "Repair Code",
+    "Repair Type"
+From 
+	[$(vLibTransform)Trans_gra_repair_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_repair', zTimeMark, vDealer);
+
+EndSub
+
+//     REPAIR,
+// 	   gra_repair.RM_PART_NUMBER			as [Repair RM Part Number],
+//     gra_repair.ZONE_REPAIR_PART_NUMBER	as [Repair Zone Part Number]
+//     CONSTRUCTION,
+//     REPAIR_SIZE,
+//     gra_repair.FGRR_PART_NUMBER,
+//     gra_repair.FGRO_PART_NUMBER,,
+//     FREE_REPAIR_PART_NUM,
+//     REPAIR_DEMERIT_PART_NUM,
+//     AD_RR_PART_NUM,
+//     AD_RO_PART_NUM,
+//     gra_repair.LOGICAL_DELETE,
+//     TIRE_HAS_REPAIR

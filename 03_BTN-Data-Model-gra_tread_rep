@@ -1,0 +1,37 @@
+Sub gra_tread_repair
+
+//********************************************************************************
+// 	Name:	gra_tread_repair
+// 	Notes: 	Loads tread repair information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+gra_tread_repair:
+Load
+    AutoNumberHash128(WORK_ORDER_LINE_KEY) 		as %WORK_ORDER_LINE_KEY,
+    AutoNumberHash128(REPAIR_KEY) 				as REPAIR_KEY,
+    "Repair Count"								as [Repair Count],
+	gra_tread_repair.STATUS						as [Repair Status],
+    Date(Floor(Repair))							as [Repair Date],
+    Text((Time(Frac(Repair),'hh:mm tt')))		as [Repair Time]
+From 
+	[$(vLibTransform)Trans_gra_tread_repair_$(vDealer).qvd](qvd);
+
+// Save load statistics
+Call TimeLog('gra_tread_repair', zTimeMark, vDealer);
+
+EndSub
+
+//     gra_tread_repair.RM_PART_NUMBER,
+//     gra_tread_repair.ZONE_REPAIR_PART_NUMBER,
+// 	   TREAD_REPAIR_PK
+//     LOT_NUM,
+//     IS_EXISTING_REPAIR,
+//     gra_tread_repair.FGRR_PART_NUMBER,
+//     gra_tread_repair.FGRO_PART_NUMBER,
+//     AREA,
+//     TREAD_STATUS,
+//     USER_ID,
+//     SHOP_FLOOR_POST,
+//     WASTED_REASON,
+//     gra_tread_repair.CURRENT_COST

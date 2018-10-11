@@ -1,0 +1,23 @@
+Sub DateBridge
+
+//********************************************************************************
+// 	Name:	DateBridge
+// 	Notes: 	Loads date bridge information and apply transformations for key fields
+//	Source:	Qvd generated from database
+//********************************************************************************
+
+DateBridge:
+Load
+    AutoNumberHash128(WORK_ORDER_LINE_KEY) 		as %WORK_ORDER_LINE_KEY,
+	Floor(MasterDate)							as %DATE_KEY,
+    DateType
+//    MasterDate
+From 
+	[$(vLibTransform)Trans_DateBridge_$(vDealer).qvd](qvd);
+//Where
+//	Match(DateType,'W','C') > 0;
+
+// Save load statistics
+Call TimeLog('DateBridge', zTimeMark, vDealer);
+
+EndSub
